@@ -1,0 +1,19 @@
+@args (String code, String error)
+
+@views.partials._head.template()
+<body>
+
+<div class="text-center">
+    <h1 class="display-1 text-primary">@raw(code)</h1>
+    <p>
+        @error
+    </p>
+    <p>
+        <a href="/">Click here to go home</a>.
+    </p>
+</div>
+
+@views.partials._js.template()
+</body>
+
+</html>

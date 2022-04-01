@@ -1,0 +1,46 @@
+@import java.util.*
+@import java.util.regex.Pattern;
+@import java.net.URLEncoder;
+@import java.nio.charset.StandardCharsets;
+@args (ArrayList<Map<String, String>> results )
+
+@views.partials._head.template()
+@views.partials._js.template()
+<section>
+  <div class="container is-fluid">
+    <div class="box content">
+        <h1 class="title">Connected Customer Results</h1>
+        <div class="columns is-12">
+
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Number</th>
+              <th>Customer 1</th>
+              <th>Customer 2</th>
+              <th>Shared Attributes</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for ((i, result) : results) {
+              <tr>
+                <th>@(i.index() + 1) </th>
+                <td><a target="_blank" href="/?id=@result.get("id")"> @result.get("id")</a></td>
+                <td><a target="_blank" href="/?id=@result.get("id2")"> @result.get("id2")</a></td>
+                <td>@for (link : result.get("shared").split(Pattern.quote("|"))) {
+                     <a target="_blank" href="/?id=@result.get("id")+@result.get("id2")+@URLEncoder.encode((String)link, StandardCharsets.UTF_8.toString())">@link</a> &nbsp;
+                  }
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+
+        </div>
+    </div>
+  </div>
+</section>
+
+</body>
+
+</html>
