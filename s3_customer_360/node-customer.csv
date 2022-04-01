@@ -1,0 +1,11 @@
+~id,~label,generator_id:Int,value:String
+customer-1,Customer,1,amey
+customer-2,Customer,2,ajit
+customer-3,Customer,3,bhavisha
+customer-4,Customer,4,rohan
+customer-5,Customer,5,james
+customer-6,Customer,6,john
+customer-7,Customer,7,brain
+customer-8,Customer,8,paul
+customer-9,Customer,9,brianna
+customer-10,Customer,10,chris

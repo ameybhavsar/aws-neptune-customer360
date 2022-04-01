@@ -1,0 +1,6 @@
+~id,~label,generator_id:Int,value:String
+bank-101,Bank,101,chase
+bank-102,Bank,102,bankofamerica
+bank-103,Bank,103,wellsfargo
+bank-104,Bank,104,jpmc
+bank-105,Bank,105,discover

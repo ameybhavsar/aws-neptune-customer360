@@ -1,0 +1,7 @@
+~id,~label,generator_id:Int,value:String
+card-201,Card,201,chase-freedom
+card-202,Card,202,bankofamerica-reserved
+card-203,Card,203,wellsfargo-travel
+card-204,Card,204,jpmc-venture
+card-205,Card,205,discover-student
+card-206,Card,206,chase-preffered
