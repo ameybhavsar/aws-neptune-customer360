@@ -184,7 +184,7 @@ public class App extends Jooby {
       // Prepare the results:
       ArrayList<HashMap<String, Object>> results = new ArrayList<>();
 
-      BANK_CUSTOMER_CACHE.get(id).forEach( entry -> {
+      BANK_TELLER_CACHE.get(id).forEach( entry -> {
         HashMap<String, Object> result = new HashMap<>();
         result.put("source", entry.get("id"));
         result.put("target", entry.get("id2"));
@@ -206,13 +206,20 @@ public class App extends Jooby {
 
       return results;
     });
+    
+    // Load index template file.
+    get("/", ctx -> views.index.template());
 
+    // Load customer profile template file.
     get("/profile", ctx -> views.profile.template());
     
+    // Load customer recommendation template file.
     get("/recommendation", ctx -> views.recommendation.template());
     
-    get("/teller", ctx -> views.teller.template());
+    // Load bank agent template file.
+    get("/banker", ctx -> views.banker.template());
 
+    // Optional
     get("/match", ctx -> {
       Runnable runnableTask = () -> {
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
@@ -339,6 +346,7 @@ public class App extends Jooby {
       return FINDING;
     });
 
+    // Optional
     get("/results", ctx -> {
       ArrayList<Map<String, String>> results = new ArrayList<>();
       File foundFile = new File("found.csv");
@@ -351,6 +359,7 @@ public class App extends Jooby {
       return views.results.template(results);
     });
     
+    // Optional
     get("/rings", ctx -> {
       ArrayList<Map<String, String>> results = new ArrayList<>();
       File ringsFile = new File("rings.csv");
