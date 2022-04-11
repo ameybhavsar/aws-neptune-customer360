@@ -1,0 +1,6 @@
+~id,~label,generator_id:Int,value:String
+offer-301,Offer,301,cashback
+offer-302,Offer,302,travel
+offer-303,Offer,303,shopping
+offer-304,Offer,304,gas
+offer-305,Offer,305,student

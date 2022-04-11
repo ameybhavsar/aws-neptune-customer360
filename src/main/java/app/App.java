@@ -32,23 +32,23 @@ import java.util.regex.Pattern;
 
 public class App extends Jooby {
 
-  static Map<String, Object> getNodeID(String value) {
+  static List<Map<String, Object>> getNodeID(String value) {
     return NeptuneQueries.nodeByValue(value);
   }
 
   static List<Map<String, Object>> getRels(String id) {
     return NeptuneQueries.relatedById(id);
   }
+
+ static List<Map<String, Object>> getCardRecommendation(String id) {
+    return NeptuneQueries.getCardRecommendation(id);
+  }  
   
-   static List<Map<String, Object>> getBankCustomers(String id) {
+  static List<Map<String, Object>> getBankCustomers(String id) {
     return NeptuneQueries.getCustomerOfBank(id);
   }
   
-   static List<Map<String, Object>> getBankTeller(String id) {
-    return NeptuneQueries.getTellerOfBank(id);
-  }
-
-  public static LoadingCache<String, Map<String, Object>> NODE_ID_CACHE = Caffeine.newBuilder()
+  public static LoadingCache<String, List<Map<String, Object>>> NODE_ID_CACHE = Caffeine.newBuilder()
           .maximumSize(100_000)
           .expireAfterWrite(30, TimeUnit.DAYS)
           .build(App::getNodeID);
@@ -58,15 +58,15 @@ public class App extends Jooby {
           .expireAfterWrite(30, TimeUnit.DAYS)
           .build(App::getRels);
           
+  public static LoadingCache<String, List<Map<String, Object>>> CARD_REC_CACHE = Caffeine.newBuilder()
+          .maximumSize(100_000)
+          .expireAfterWrite(30, TimeUnit.DAYS)
+          .build(App::getCardRecommendation);           
+          
   public static LoadingCache<String, List<Map<String, Object>>> BANK_CUSTOMER_CACHE = Caffeine.newBuilder()
           .maximumSize(100_000)
           .expireAfterWrite(30, TimeUnit.DAYS)
           .build(App::getBankCustomers);
-          
-  public static LoadingCache<String, List<Map<String, Object>>> BANK_TELLER_CACHE = Caffeine.newBuilder()
-          .maximumSize(100_000)
-          .expireAfterWrite(30, TimeUnit.DAYS)
-          .build(App::getBankTeller);        
 
   public static HashMap<String, Object> FINDING = new HashMap<>();
   public static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
@@ -106,8 +106,45 @@ public class App extends Jooby {
 
       ctx.render(views.error.template(code, cause.getMessage()));
     });
-
+    
+    // Default
     get("/edges/{id}", ctx -> {
+      ctx.setResponseType(MediaType.json);
+
+      String id = ctx.path("id").value();
+      if (id.startsWith("name-")) {
+        id = id.replaceAll(Pattern.quote("+"), " ");
+      }
+      
+      // Prepare the results:
+      ArrayList<HashMap<String, Object>> results = new ArrayList<>();
+
+      NODE_ID_CACHE.get(id).forEach( entry -> {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("source", entry.get("id"));
+        result.put("target", entry.get("id2"));
+
+        HashMap<String, String> sd = new HashMap<>();
+        List<String> labels = (List<String>)entry.get("labels");
+        sd.put("type", labels.get(0));
+        sd.put("label", (String)entry.get("value"));
+
+        HashMap<String, String> td = new HashMap<>();
+        List<String> labels2 = (List<String>)entry.get("labels2");
+        td.put("type", labels2.get(0));
+        td.put("label", (String)entry.get("value2"));
+
+        result.put("source_data", sd);
+        result.put("target_data", td);
+        results.add(result);
+      });
+
+
+      return results;
+    });
+
+    // Usecase 1
+    get("/edges1/{id}", ctx -> {
       ctx.setResponseType(MediaType.json);
 
       String id = ctx.path("id").value();
@@ -141,7 +178,42 @@ public class App extends Jooby {
       return results;
     });
     
-    get("/edges1/{id}", ctx -> {
+    // Usecase 2
+    get("/edges2/{id}", ctx -> {
+      ctx.setResponseType(MediaType.json);
+
+      String id = ctx.path("id").value();
+      if (id.startsWith("name-")) {
+        id = id.replaceAll(Pattern.quote("+"), " ");
+      }
+      // Prepare the results:
+      ArrayList<HashMap<String, Object>> results = new ArrayList<>();
+
+      CARD_REC_CACHE.get(id).forEach( entry -> {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("source", entry.get("id"));
+        result.put("target", entry.get("id2"));
+
+        HashMap<String, String> sd = new HashMap<>();
+        List<String> labels = (List<String>)entry.get("labels");
+        sd.put("type", labels.get(0));
+        sd.put("label", (String)entry.get("value"));
+
+        HashMap<String, String> td = new HashMap<>();
+        List<String> labels2 = (List<String>)entry.get("labels2");
+        td.put("type", labels2.get(0));
+        td.put("label", (String)entry.get("value2"));
+
+        result.put("source_data", sd);
+        result.put("target_data", td);
+        results.add(result);
+      });
+
+      return results;
+    });
+    
+    // Usecase 3
+    get("/edges3/{id}", ctx -> {
       ctx.setResponseType(MediaType.json);
 
       String id = ctx.path("id").value();
@@ -174,49 +246,16 @@ public class App extends Jooby {
       return results;
     });
     
-    get("/edges2/{id}", ctx -> {
-      ctx.setResponseType(MediaType.json);
-
-      String id = ctx.path("id").value();
-      if (id.startsWith("name-")) {
-        id = id.replaceAll(Pattern.quote("+"), " ");
-      }
-      // Prepare the results:
-      ArrayList<HashMap<String, Object>> results = new ArrayList<>();
-
-      BANK_TELLER_CACHE.get(id).forEach( entry -> {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("source", entry.get("id"));
-        result.put("target", entry.get("id2"));
-
-        HashMap<String, String> sd = new HashMap<>();
-        List<String> labels = (List<String>)entry.get("labels");
-        sd.put("type", labels.get(0));
-        sd.put("label", (String)entry.get("value"));
-
-        HashMap<String, String> td = new HashMap<>();
-        List<String> labels2 = (List<String>)entry.get("labels2");
-        td.put("type", labels2.get(0));
-        td.put("label", (String)entry.get("value2"));
-
-        result.put("source_data", sd);
-        result.put("target_data", td);
-        results.add(result);
-      });
-
-      return results;
-    });
-    
-    // Load index template file.
+    // Default: Load index template file.
     get("/", ctx -> views.index.template());
 
-    // Load customer profile template file.
+    // Usecase 1: Load customer profile template file.
     get("/profile", ctx -> views.profile.template());
     
-    // Load customer recommendation template file.
+    // Usecase 2: Load customer recommendation template file.
     get("/recommendation", ctx -> views.recommendation.template());
     
-    // Load bank agent template file.
+    // Usecase 3: Load bank agent template file.
     get("/banker", ctx -> views.banker.template());
 
     // Optional

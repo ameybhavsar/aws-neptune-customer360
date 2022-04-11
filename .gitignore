@@ -5,6 +5,7 @@
 .settings/
 target/
 bin/
+.factorypath
 
 # Log file
 *.log
