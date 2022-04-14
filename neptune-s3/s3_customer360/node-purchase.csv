@@ -1,0 +1,11 @@
+~id,~label,generator_id:Int,value:String,category:String
+purchase-401,Purchase,401,airline-tickets,travel
+purchase-402,Purchase,402,shell-gas,gas
+purchase-403,Purchase,403,macy-shoes,shopping
+purchase-404,Purchase,404,kohls-jacket,shopping
+purchase-405,Purchase,405,hyatt-hotel,travel
+purchase-406,Purchase,406,shoprite-grocery,cashback
+purchase-407,Purchase,407,exxon-gas,gas
+purchase-408,Purchase,408,college-fees,student
+purchase-409,Purchase,409,starbucks-coffee,cashback
+purchase-410,Purchase,410,uber-ride,travel

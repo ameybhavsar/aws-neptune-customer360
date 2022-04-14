@@ -15,7 +15,7 @@ public class NeptuneQueries {
     // Usecase 1: Customer logs into the financial portal to know about his financial landscape.
     public static final String GET_RELATED_BY_ID =
             //"MATCH (node)-[r]-(node2) WHERE ID(node) = '%s' RETURN ID(node) AS id, LABELS(node) AS labels, node.value AS value, ID(node2) AS id2, LABELS(node2) AS labels2, node2.value AS value2, TYPE(r) AS type";
-            "MATCH (node:Customer)-[r]-(node2) WHERE node.value = '%s' RETURN ID(node) AS id, LABELS(node) AS labels, node.value AS value, ID(node2) AS id2, LABELS(node2) AS labels2, node2.value AS value2, TYPE(r) AS type";
+            "MATCH (node:Customer)-[r:HAS_ACCOUNT|HAS_CARD]-(node2) WHERE node.value = '%s' RETURN ID(node) AS id, LABELS(node) AS labels, node.value AS value, ID(node2) AS id2, LABELS(node2) AS labels2, node2.value AS value2, TYPE(r) AS type";
             
     // Usecase 2: Customer calls credit agent for credit card recommendation. To get recommendation, Credit card agent : Based on recent purchases and bank offers makes a recommendation.
     public static final String GET_CARD_RECOMMENDATION =
