@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/*public class UnitTest {
+public class UnitTest {
   @Test
   public void welcome() {
     MockRouter router = new MockRouter(new App());
@@ -14,4 +14,4 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
       assertEquals(StatusCode.OK, rsp.getStatusCode());
     });
   }
-}*/
+}
